@@ -49,7 +49,7 @@ EmailWatcher.prototype.processIfNeeded = function(f, stat){
 EmailWatcher.prototype.progressFile = function(f){
   var relative = path.relative(this.params.sourceDir, f);
   var progress = path.join(this.params.progressDir, relative);
-  return relative;
+  return progress;
 };
 
 EmailWatcher.prototype.markComplete = function(f){
