@@ -26,7 +26,7 @@ w.on("incoming", function(filename, message){
     var posts = [];
 
     var ccdas = message.attachments.filter(function(a){
-      return a.fileName.slice("-3").toLowerCase() === "xml";
+      return a.fileName && a.fileName.slice("-3").toLowerCase() === "xml";
     });
 
     message.to.forEach(function(to){
