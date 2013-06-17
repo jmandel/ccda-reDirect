@@ -2,13 +2,15 @@ var argv = require("optimist").argv;
 var rest = require("restler");
 var crypto = require('crypto');
 var async = require('async');
+var template = require('url-template');
 
-var httpHost = argv.http_host || process.env["HTTP_HOST"];
 var sourceDir = argv.source_dir || process.env["SOURCE_DIR"];
 var progressDir = argv.progress_dir || process.env["PROGRESS_DIR"];
+var httpPostUrlTemplate = argv.ccda_post_url || process.env["CCDA_POST_URL"];
+var httpPostUrl = template.parse(httpPostUrlTemplate);
 
 console.log(argv);
-Watcher = require("./index");
+Watcher = require("./watcher");
 
 w = new Watcher({
   sourceDir: sourceDir,
@@ -17,36 +19,42 @@ w = new Watcher({
 
 w.on("incoming", function(filename, message){
   console.log("incoming message", filename);
+  console.log(message);
 
   if (message.attachments){
 
-    var hash = crypto.createHash('md5').update(message.to[0].address).digest("hex");
+    var posts = [];
+
     var ccdas = message.attachments.filter(function(a){
       return a.fileName.slice("-3").toLowerCase() === "xml";
     });
 
+    message.to.forEach(function(to){
+
+      var url = httpPostUrl.expand({
+        to: message.to[0].address,
+        from: message.from[0].address
+      });
+
+      ccdas.forEach(function(ccda){
+        posts.push({url: url, ccda:  ccda});
+      });
+
+    });
+
     console.log("C-CDA Attachments: ", ccdas.length);
-
-    async.each(ccdas, function(ccda, callback) {
-      var complete = false;
-
-      rest.post(httpHost + hash, {
-        data: ccda.content.toString(),
-        headers: {
-          "Content-type": "text/xml"
-        }
+    async.each(posts, function(p, callback) {
+      console.log("POSTing to ", p.url);
+      rest.post(p.url, {
+        data: p.ccda.content.toString(),
+        headers: {"Content-type": "text/xml"}
       }).on('complete', function(data, response){
-        if (complete) {
-          console.log("compete handler double-called :-(");
-          return;
-        }
-        complete = true;
-
-        console.log("POSTed", filename, response.statusCode);
-        if (response.statusCode === 200){
+        if (response && response.statusCode === 200){
+          console.log("POSTed ", filename, response ? response.statusCode : null);
           return callback();
         }
-        return callback(response);
+        console.log("Err posting", filename, response);
+        return callback(response||"Null response");
       });
     }, function(err){
       if (!err) {
@@ -58,4 +66,3 @@ w.on("incoming", function(filename, message){
     });
   }
 });
-

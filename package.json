@@ -1,17 +1,18 @@
 {
-  "name": "ccda-receiver-imap-connector",
+  "name": "smart-ccda-redirect",
   "version": "0.0.1",
-  "description": "Transfer C-CDA attachments from IMAP --> C-CDA Receiver",
+  "description": "Transfer C-CDA attachments from IMAP --> HTTP POST",
   "author": "Josh Mandel <joshua.mandel@childrens.harvard.edu>",
   "scripts":{
-   "start": "node ./launch.js"
+    "start": "node ./launch.js"
   },
   "dependencies": {
     "mailparser": "*",
     "watch": "*",
     "optimist": "*",
     "restler": "*",
-    "async": "*"
+    "async": "*",
+    "url-template": "*"
   },
   "devDependencies": {
   },
