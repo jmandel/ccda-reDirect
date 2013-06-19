@@ -1,5 +1,5 @@
 var argv = require("optimist").argv;
-var rest = require("restler");
+var request = require("request");
 var crypto = require('crypto');
 var async = require('async');
 var template = require('url-template');
@@ -19,7 +19,6 @@ w = new Watcher({
 
 w.on("incoming", function(filename, message){
   console.log("incoming message", filename);
-  console.log(message);
 
   if (message.attachments){
 
@@ -45,23 +44,24 @@ w.on("incoming", function(filename, message){
     console.log("C-CDA Attachments: ", ccdas.length);
     async.each(posts, function(p, callback) {
       console.log("POSTing to ", p.url);
-      rest.post(p.url, {
-        data: p.ccda.content.toString(),
-        headers: {"Content-type": "text/xml"}
-      }).on('complete', function(data, response){
-        if (response && response.statusCode === 200){
-          console.log("POSTed ", filename, response ? response.statusCode : null);
-          return callback();
-        }
-        console.log("Err posting", filename, response);
-        return callback(response||"Null response");
-      });
+      request(
+        { method: 'POST',
+          url: p.url,
+          body: p.ccda.content,
+          headers: {"Content-type": "text/xml"}
+        }, function (error, response, body) {
+          if (response && response.statusCode === 200){
+            console.log("POSTed ", filename, response.statusCode);
+            return callback();
+          }
+          return callback(error||response.statusCode);
+        });
     }, function(err){
       if (!err) {
         w.markComplete(filename);
         console.log("Marked progress for ", filename);
       } else {
-        console.log("Error POSTing for", filename);
+        console.log("Error POSTing for", filename, err);
       }
     });
   }

@@ -10,7 +10,7 @@
     "mailparser": "*",
     "watch": "*",
     "optimist": "*",
-    "restler": "*",
+    "request": "*",
     "async": "*",
     "url-template": "*"
   },
