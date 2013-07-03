@@ -26,6 +26,4 @@ This is designed to run in the context of the Direct Java Reference
 Implementation.  You can install the whole shebang
 automatically with [ansible](http://ansible.cc):
 
-https://github.com/jmandel/ansible-ccda-reDirect
-
-
+https://github.com/jmandel/ansible-ccda
