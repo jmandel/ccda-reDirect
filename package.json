@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "mailparser": "*",
+    "adm-zip": "*",
     "watch": "*",
     "optimist": "*",
     "request": "*",

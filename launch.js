@@ -3,6 +3,8 @@ var request = require("request");
 var crypto = require('crypto');
 var async = require('async');
 var template = require('url-template');
+var AdmZip = require('adm-zip');
+var path = require('path');
 
 var sourceDir = argv.source_dir || process.env["SOURCE_DIR"];
 var progressDir = argv.progress_dir || process.env["PROGRESS_DIR"];
@@ -28,6 +30,21 @@ w.on("incoming", function(filename, message){
       return a.fileName && a.fileName.slice("-3").toLowerCase() === "xml";
     });
 
+    message.attachments.filter(function(a){
+      return a.fileName && a.fileName.slice("-3").toLowerCase() === "zip";
+    }).forEach(function(a){
+      new AdmZip(a.content).getEntries().forEach(function(e){
+        var ext = path.extname(e.entryName).toLowerCase();
+        if (ext !== '.xml') {
+          return;
+        }
+        if (path.basename(e.entryName).toLowerCase() === 'metadata.xml') {
+          return;
+        }
+        ccdas.push({ content: e.getData() });
+      });
+    });
+
     message.to.forEach(function(to){
 
       var url = httpPostUrl.expand({
@@ -41,7 +58,7 @@ w.on("incoming", function(filename, message){
 
     });
 
-    console.log("C-CDA Attachments: ", ccdas.length);
+    console.log("C-CDA Attachments: ", ccdas.length, posts.length, " posts");
     async.each(posts, function(p, callback) {
       console.log("POSTing to ", p.url);
       request(
