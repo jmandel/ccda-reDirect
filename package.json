@@ -3,19 +3,18 @@
   "version": "0.0.1",
   "description": "Transfer C-CDA attachments from IMAP --> HTTP POST",
   "author": "Josh Mandel <joshua.mandel@childrens.harvard.edu>",
-  "scripts":{
+  "scripts": {
     "start": "node ./launch.js"
   },
   "dependencies": {
     "mailparser": "*",
     "adm-zip": "*",
-    "watch": "*",
+    "watch": "https://github.com/mikeal/watch/archive/v0.8.1.tar.gz",
     "optimist": "*",
     "request": "*",
     "async": "*",
     "url-template": "*"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "engine": "node >= 0.6.0"
 }
