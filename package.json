@@ -9,7 +9,7 @@
   "dependencies": {
     "mailparser": "*",
     "adm-zip": "*",
-    "watch": "https://github.com/mikeal/watch/archive/v0.8.1.tar.gz",
+    "watch": "~0.9.0",
     "optimist": "*",
     "request": "*",
     "async": "*",

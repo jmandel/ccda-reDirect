@@ -44,9 +44,9 @@
       "resolved": "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.3.tgz"
     },
     "watch": {
-      "version": "0.8.1",
-      "from": "https://github.com/mikeal/watch/archive/v0.8.1.tar.gz",
-      "resolved": "https://github.com/mikeal/watch/archive/v0.8.1.tar.gz"
+      "version": "0.9.0",
+      "from": "watch@0.9.0",
+      "resolved": "https://registry.npmjs.org/watch/-/watch-0.9.0.tgz"
     },
     "optimist": {
       "version": "0.6.0",
